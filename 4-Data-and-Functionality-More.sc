@@ -41,3 +41,11 @@
  *
  *
  */
+
+
+
+
+// by-value       like arguments in Java's method, must be evaluated to a value before the method is called.
+// by-name        f: => A       is called every time 'f' is referenced.
+// by-need        `lazy`        is evaluated at most once to produce the value.
+
