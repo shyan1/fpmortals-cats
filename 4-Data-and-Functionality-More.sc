@@ -49,3 +49,61 @@
 // by-name        f: => A       is called every time 'f' is referenced.
 // by-need        `lazy`        is evaluated at most once to produce the value.
 
+
+/// Cats formalises the three evaluation strategies with an ADT called `Eval`
+sealed abstract class Eval[A] {
+  def value: A
+}
+
+object Eval {
+  def always[A](f: => A): Eval[A] = Always(() => f)
+
+  def later[A](f: => A): Eval[A] = Later(() => f)
+
+  def now[A](a: A): Eval[A] = Now(a)
+}
+
+final case class Always[A](f: () => A) extends Eval[A] {
+  def value: A = f()
+}
+
+final case class Later[A](f: () => A) extends Eval[A] {
+  lazy val value: A = f()
+}
+
+final case class Now[A](value: A) extends Eval[A]
+
+/**
+ * When we write pure programs, we are free to replace any Always with Later or Now, and vice versa, with no change to
+ * the correctness of the program. This is the essence of referential transparency: the ability to replace a computation
+ * by its value, or a value by its computation.
+ */
+
+import cats.Eval
+import cats.implicits._
+
+val now = cats.Eval.now {
+  println("Running expensive calculating....")
+  1 + 2 + 3
+}
+
+val later = cats.Eval.later {
+  println("Running expensive calculating...")
+  1 + 2 + 3
+}
+
+later.value          // evaluating now
+later.value
+
+val always = cats.Eval.later {
+  println("Running expensive calculating...")
+  1 + 2 + 3
+}
+
+always.value
+always.value
+
+
+// TODO: https://monix.io/
+
+
