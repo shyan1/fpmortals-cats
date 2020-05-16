@@ -104,6 +104,16 @@ always.value
 always.value
 
 
-// TODO: https://monix.io/
+/// Refined
+//          https://github.com/fthomas/refined
+import eu.timepit.refined._
+import eu.timepit.refined.api.Refined
+import eu.timepit.refined.auto._
+import eu.timepit.refined.numeric._
+
+val i1: Int Refined Positive = 5
+val i2: Int Refined Positive = -5       // compilation error
+
+
 
 
