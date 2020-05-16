@@ -74,4 +74,38 @@ val empty: String Refined NonEmpty = ""
 // (A => B) => C
 
 
+/**
+ * A typeclass is trait that
+ * - holds no state
+ * - has a type parameter
+ * - has at least one abstract method (primitive combinators)
+ * - may contain generalised methods (derived combinators)
+ * - may extend other typeclasses
+ */
 
+/**
+ * There can only be one implementation of a typeclass for any given type parameter, a property known as typclass
+ * coherence (一致；连贯性；凝聚).
+ *
+ * Typeclass coherence is primarily about consistency, and the consistency gives us the confidence to use implicit
+ * parameters.
+ *
+ * Additionally, typeclass coherence allows us to globally cache implicits at runtime and save memory allocations,
+ * gaining performance improvements from reduced pressure on the garbage collector.
+ *
+ */
+trait Ordering[T] {
+  def compare(x: T, y: T): Int
+
+  def lt(x: T, y: T): Boolean = compare(x, y) < 0
+  def gt(x: T, y: T): Boolean = compare(x, y) > 0
+}
+
+trait Numeric[T] extends Ordering[T] {
+  def plus(x: T, y: T): T
+  def times(x: T, y: T): T
+  def negate(x: T): T
+  def zero: T
+
+  def abs(x: T): T = if (lt(x, zero)) negate(x) else x
+}
